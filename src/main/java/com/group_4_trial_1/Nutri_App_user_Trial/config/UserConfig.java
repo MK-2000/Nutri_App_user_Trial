@@ -36,6 +36,7 @@ public class UserConfig {
             repository.saveAll(
                     List.of(mariam, alex)
             );
+//            repository.save(mariam);
         };
     }
 }
