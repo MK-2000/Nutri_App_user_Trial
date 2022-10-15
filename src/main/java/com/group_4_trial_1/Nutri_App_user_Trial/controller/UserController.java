@@ -25,6 +25,11 @@ public class UserController {
 
     @PostMapping
     public void saveUser(@RequestBody Userdto user) {
-        userService.saveUser(user);
+        userService.registerUser(user);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public void deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
     }
 }
