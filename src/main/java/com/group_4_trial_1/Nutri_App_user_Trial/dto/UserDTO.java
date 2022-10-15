@@ -15,8 +15,8 @@ public class UserDTO {
     private String email;
     private String role;
     private String status;
-    private double weight;
-    private double height;
+    private Float weight;
+    private Float height;
     private String dietaryOrientation;
     private String intensity;
     private String goal;
@@ -33,7 +33,7 @@ public class UserDTO {
 
     public UserDTO(Long id, String userIdentification, String name, String contact,
                    String gender, LocalDate dob, String email, String role,
-                   String status, double weight, double height, String dietaryOrientation,
+                   String status, Float weight, Float height, String dietaryOrientation,
                    String intensity, String goal, String workOutline, Time wakeUpTime,
                    Time sleepTime, String medicalCondition, String allergicTo, String loginName, String password) {
         this.id = id;
@@ -138,19 +138,19 @@ public class UserDTO {
         this.status = status;
     }
 
-    public double getWeight() {
+    public Float getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(Float weight) {
         this.weight = weight;
     }
 
-    public double getHeight() {
+    public Float getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(Float height) {
         this.height = height;
     }
 
