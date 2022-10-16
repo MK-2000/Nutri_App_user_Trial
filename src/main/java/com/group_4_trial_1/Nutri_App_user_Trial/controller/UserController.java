@@ -1,6 +1,7 @@
 package com.group_4_trial_1.Nutri_App_user_Trial.controller;
 
-import com.group_4_trial_1.Nutri_App_user_Trial.entity.Userdto;
+import com.group_4_trial_1.Nutri_App_user_Trial.entity.Status;
+import com.group_4_trial_1.Nutri_App_user_Trial.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.group_4_trial_1.Nutri_App_user_Trial.service.UserService;
@@ -20,12 +21,17 @@ public class UserController {
     }
 
     @GetMapping
-    public List<Userdto> getUsers(){
-        return userService.getUsers();
+    public List<User> getAllUsers(){
+        return userService.getAllUsers();
+    }
+
+    @GetMapping(path = "{userId}")
+    public User getUserById(@PathVariable("userId") String userId) {
+        return userService.getUserByUserId(userId);
     }
 
     @PostMapping
-    public void saveUser(@RequestBody Userdto user) {
+    public void saveUser(@RequestBody User user) {
         userService.registerUser(user);
     }
 
@@ -41,7 +47,7 @@ public class UserController {
             @RequestParam(required = false) String contact,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String gender,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Status status,
             @RequestParam(required = false) Float weight,
             @RequestParam(required = false) Float height,
             @RequestParam(required = false) String goal,
