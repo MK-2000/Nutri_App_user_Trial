@@ -1,11 +1,14 @@
 package com.group_4_trial_1.Nutri_App_user_Trial.service;
 
-import com.group_4_trial_1.Nutri_App_user_Trial.entity.Userdto;
+import com.group_4_trial_1.Nutri_App_user_Trial.entity.Status;
+import com.group_4_trial_1.Nutri_App_user_Trial.entity.User;
+import com.group_4_trial_1.Nutri_App_user_Trial.exception.UserApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.group_4_trial_1.Nutri_App_user_Trial.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Type;
 import java.sql.Time;
 import java.util.List;
 import java.util.Objects;
@@ -21,19 +24,27 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<Userdto> getUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
 //    public List<Userdto> getByUserId(Userdto user) {
 //        return userRepository.findAll();
 //    }
+    public User getUserByUserId(String userId) {
+        boolean exist = userRepository.findByUserIdentification(userId).isPresent();
+        if(!exist) {
+            throw new UserApiRequestException("User with " + userId + " is not present in database right now !");
+        }
+       return userRepository.findByUserIdentification(userId).get();
+    }
 
-    public void registerUser(Userdto user) {
-        Optional<Userdto> optionalUser = userRepository
+    public void registerUser(User user) {
+        Optional<User> optionalUser = userRepository
                                         .findByUserIdentification(user.getUserIdentification());
         if(optionalUser.isPresent()) {
-            throw new IllegalStateException("User is already present in the Database !");
+            throw new UserApiRequestException("User is already present in the Database !");
+//            throw new IllegalStateException("User is already present in the Database !");
         }
         userRepository.save(user);
     }
@@ -43,16 +54,17 @@ public class UserService {
         boolean exist = userRepository.findById(id).isPresent();
 
         if (!exist) {
-            throw new IllegalStateException("User is not present in the database ! Please try with different User Id !");
+            throw new UserApiRequestException("User is not present in the database ! Please try with different User Id !");
+//            throw new IllegalStateException("User is not present in the database ! Please try with different User Id !");
         }
         userRepository.deleteById(id);
 
     }
 
     @Transactional
-    public void updateUser(Long id, String name, String contact, String email, String gender, String status, Float weight,
+    public void updateUser(Long id, String name, String contact, String email, String gender, Status status, Float weight,
                            Float height, String goal, Time wakeUpTime, Time sleepTime) {
-            Userdto user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+            User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException(
                     "User with this id is not present in the database."
         ));
             if(name != null && name.length() > 0 && !Objects.equals(name, user.getName())) {
@@ -65,9 +77,10 @@ public class UserService {
 
             if(email != null && email.length() > 0 && email.contains("@") && email.contains(".")
                     && Objects.equals(email, user.getEmail())) {
-                Optional<Userdto> optionalUser = userRepository.findUserByemail(email);
+                Optional<User> optionalUser = userRepository.findUserByemail(email);
                 if(optionalUser.isPresent()) {
-                    throw new IllegalStateException("User with same email is already present in the database!");
+                    throw new UserApiRequestException("User with same email is already present in the database!");
+//                    throw new IllegalStateException("User with same email is already present in the database!");
                 }
                 user.setEmail(email);
             }
@@ -76,15 +89,15 @@ public class UserService {
 //                user.setGender(gender);
 //            }
 //
-//            if((status.equalsIgnoreCase("Active") || status.equalsIgnoreCase("Inactive") || !status.equals(null))
-//                                        && !Objects.equals(status, user.getStatus())) {
-//                user.setStatus(status);
-//            }
+            if(status == Status.ACTIVE || status == Status.INACTIVE ||
+                    status == Status.BLOCKED && status != user.getStatus()) {
+                user.setStatus(status);
+            }
 //
-//            if(weight > 0F) {
+//            if(weight > 0f) {
 //                user.setWeight(weight);
 //            }
-//            if(height > 0F) {
+//            if(height > 0f) {
 //                user.setHeight(height);
 //            }
 //
